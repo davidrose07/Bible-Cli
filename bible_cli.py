@@ -15,7 +15,7 @@ class Bible:
         self.data = None 
         self.p = subprocess.Popen(['less', '-R'], stdin=subprocess.PIPE, stdout=sys.stdout)
         
-        
+        self.prompt_color = Fore.YELLOW
         self.table_color = Fore.BLUE
         self.text_color = color
              
@@ -50,17 +50,16 @@ class Bible:
         Choose from a list of books in the bible to read
         :param: tables - list of books
         '''
-        print("Choose a book to read: ")
-        for table in tables:
-            out = self.colored_text(table, self.table_color) + "\n"
-            self.p.stdin.write(out.encode('utf-8'))
-        self.p.stdin.close()
-        self.p.wait()
-        #print(self.colored_text(f'{table}', self.table_color))
+        print(self.colored_text("Choose a book to read: ", self.prompt_color))
+        num_columns = 3
+        rows = [tables[i:i + num_columns] for i in range(0, len(tables), num_columns)]
+        max_width = max(len(table) for table in tables)  # Get the maximum length of table names for proper alignment
+        for row in rows:
+            print(self.colored_text(" ".join(table.ljust(max_width + 5) for table in row), self.table_color))  # Align each table name in the row
 
-        ans = input()
-        if ans:
-            self.book = ans
+        print()
+        self.book = input(self.colored_text("Enter a book to start reading: ", self.prompt_color)).lower()
+        if self.book:
             self.data = self.read_db()
             self.display_book()
 
@@ -72,7 +71,8 @@ class Bible:
             out = self.colored_text(lines, self.text_color) + "\n"
             self.p.stdin.write(out.encode('utf-8'))
         self.p.stdin.close()
-        self.p.wait()       
+        self.p.wait()
+        subprocess.run(['reset'])      
         
     def get_table_names(self) -> list:
             '''

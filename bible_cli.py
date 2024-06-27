@@ -13,6 +13,7 @@ class Bible:
         self.db_file = 'bible.db' 
         self.book = book
         self.data = None 
+        self.p = subprocess.Popen(['less', '-R'], stdin=subprocess.PIPE, stdout=sys.stdout)
         
         self.table_color = Fore.BLUE
         self.text_color = Fore.YELLOW
@@ -50,7 +51,11 @@ class Bible:
         '''
         print("Choose a book to read: ")
         for table in tables:
-            print(self.colored_text(f'{table}', self.table_color))
+            out = self.colored_text(table, self.table_color) + "\n"
+            self.p.stdin.write(out.encode('utf-8'))
+        self.p.stdin.close()
+        self.p.wait()
+        #print(self.colored_text(f'{table}', self.table_color))
 
         ans = input()
         if ans:
@@ -62,12 +67,11 @@ class Bible:
         '''
         Display colored text in terminal
         '''
-        p = subprocess.Popen(['less', '-R'], stdin=subprocess.PIPE, stdout=sys.stdout)
         for i,lines in enumerate(self.data, start=1):
             out = self.colored_text(lines, self.text_color) + "\n"
-            p.stdin.write(out.encode('utf-8'))
-        p.stdin.close()
-        p.wait()       
+            self.p.stdin.write(out.encode('utf-8'))
+        self.p.stdin.close()
+        self.p.wait()       
         
     def get_table_names(self) -> list:
             '''

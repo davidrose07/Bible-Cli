@@ -1,4 +1,8 @@
+README.md
+bible.db
+bible_cli.py
 setup.py
+__pycache__/bible_cli.cpython-310.pyc
 bible_cli.egg-info/PKG-INFO
 bible_cli.egg-info/SOURCES.txt
 bible_cli.egg-info/dependency_links.txt

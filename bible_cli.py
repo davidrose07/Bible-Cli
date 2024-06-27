@@ -9,14 +9,15 @@ from colorama import init, Fore, Style
 init(autoreset=True)
 
 class Bible:
-    def __init__(self, book=None) -> None:
+    def __init__(self, book=None, color=Fore.YELLOW) -> None:
         self.db_file = 'bible.db' 
         self.book = book
         self.data = None 
         self.p = subprocess.Popen(['less', '-R'], stdin=subprocess.PIPE, stdout=sys.stdout)
         
+        
         self.table_color = Fore.BLUE
-        self.text_color = Fore.YELLOW
+        self.text_color = color
              
         try:
             self.con = sqlite3.connect(self.db_file)
@@ -102,11 +103,25 @@ class Bible:
 
 @click.command()
 @click.option("--book", "-b", help="Book of the bible that you wish to view",required=False)
-def main(book) -> None:
+@click.option("--color", "-c", help="Choose a color for the text: options are Black, Red, Green, Blue, Yellow, Magenta, Cyan and White", required=False)
+def main(book, color):
+    colors = {
+        "black": Fore.BLACK,
+        "red": Fore.RED,
+        "green": Fore.GREEN,
+        "yellow": Fore.YELLOW,
+        "blue": Fore.BLUE,
+        "magenta": Fore.MAGENTA,
+        "cyan": Fore.CYAN,
+        "white": Fore.WHITE
+    }
+
+    color_value = colors.get(color.lower(), Fore.YELLOW) if color else Fore.YELLOW
+
     if book:
-        Bible(book)  
+        Bible(book, color_value)
     else:
-        Bible()
+        Bible(color=color_value)
 
 if __name__ == "__main__":
     main()

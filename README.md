@@ -14,8 +14,6 @@ bible with no options will display all the books to choose from
 still under construction.
 
 TODO:
-create an option to choose the colored text.
-display the book list in a better format
 create an option to export data
 
 
